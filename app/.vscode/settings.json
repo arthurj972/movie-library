@@ -2,4 +2,6 @@
 	"editor.codeActionsOnSave": {
 		"source.organizeImports": false
 	},
+	"editor.tabSize": 2,
+  "editor.insertSpaces": true
 }
