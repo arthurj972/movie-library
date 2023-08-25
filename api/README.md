@@ -21,3 +21,7 @@ Build the API on `build/` folder.
 
 Runs the compilated `.js` api.\
 Open [http://localhost:4000](http://localhost:4000) to view it in the browser.
+
+### `npm run lint`
+
+Analyzes the code to quickly find and fix problems.
