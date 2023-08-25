@@ -1,26 +1,24 @@
 import React, { type ReactElement } from 'react';
 import './App.css';
-import logo from './logo.svg';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import MyLibrary from './pages/my-library';
+import Navbar from './components/Navbar';
+import NoMatch from './pages/errors/404';
+import Movie from './pages/movie';
+import Home from './pages/home';
 
 const App = (): ReactElement => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Navbar />
+      <Routes>
+        <Route path='/' element={<Home />} />
+        <Route path='/my' element={<MyLibrary />} />
+        <Route path='/movie/:id' element={<Movie />} />
+        <Route path='*' element={<NoMatch />} />
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;
