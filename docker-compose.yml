@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  mongodb:
+    image: "mongo"
+    ports:
+      - "27017:27017"
+    # volume to keep the data alive
+    volumes:
+      - data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: "arthurj"
+      MONGO_INITDB_ROOT_PASSWORD: "Hz846foKTi5Mzg"
+
+  api:
+    build: ./api
+    env_file: ./api/.env
+    ports:
+      - "4000:4000"
+    depends_on:
+      - mongodb
+
+  app:
+    build: ./app
+    ports:
+      - "3000:80"
+    depends_on:
+      - api
+
+volumes:
+  data:
