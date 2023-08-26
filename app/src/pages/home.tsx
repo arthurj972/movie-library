@@ -8,12 +8,13 @@ import {
   TextField,
   Button
 } from '@mui/material';
-import env from 'react-dotenv';
 import SearchIcon from '@mui/icons-material/Search';
+
+import { getMoviesFromMovieDB } from '../services/moviedb.service';
 
 import MovieCard from '../components/MovieCard';
 import ErrorMessage from '../components/ErrorMessage';
-import { type IMovieResult, type IMovie } from '../models/movie.models';
+import { type IMovie } from '../models/movie.models';
 
 const Home = (): ReactElement => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -21,29 +22,11 @@ const Home = (): ReactElement => {
   const [searchName, setSearchName] = useState<string>('');
   const [movies, setMovies] = useState<IMovie[]>([]);
 
-  const getMovies = async (
-    name: string,
-    signal?: AbortSignal
-  ): Promise<IMovieResult> => {
-    return await fetch(`${env.API_URL}/movie/search?name=${name}`, {
-      signal,
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json'
-      }
-    }).then(async (response) => {
-      if (!response.ok) {
-        throw new Error(await response.text());
-      }
-      return await response.json();
-    });
-  };
-
   const getMoviesForAutocompleteInput = (name: string): void => {
     const controller = new AbortController();
     const signal = controller.signal;
 
-    getMovies(name, signal)
+    getMoviesFromMovieDB(name, signal)
       .then((data) => {
         setErrorMessage(null);
         const updatedOptions = [{ title: name, key: name }];
@@ -83,7 +66,7 @@ const Home = (): ReactElement => {
    * @returns {void}
    */
   const showMovies = (name?: string): void => {
-    getMovies(name ?? searchName)
+    getMoviesFromMovieDB(name ?? searchName)
       .then((data) => {
         setErrorMessage(null);
         setMovies(data.movies);
