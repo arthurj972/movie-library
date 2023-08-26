@@ -32,3 +32,7 @@ Runs the entire stack on the production mode./
 Please wait few minutes.
 
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+
+## More details
+
+Each folder have a `Readme.md` file.
