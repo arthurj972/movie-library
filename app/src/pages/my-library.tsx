@@ -7,7 +7,9 @@ import {
   type AutocompleteInputChangeReason,
   TextField,
   Button,
-  Alert
+  Alert,
+  ToggleButtonGroup,
+  ToggleButton
 } from '@mui/material';
 import env from 'react-dotenv';
 import SearchIcon from '@mui/icons-material/Search';
@@ -22,11 +24,16 @@ const MyLibrary = (): ReactElement => {
   const [options, setOptions] = useState([{ title: '', key: '' }]);
   const [searchName, setSearchName] = useState<string>('');
   const [movies, setMovies] = useState<IMovie[]>([]);
+  const [sortType, setSortType] = useState('title');
 
   const getMoviesFromLibrary = async (
-    name: string
+    name?: string,
+    sortType?: string
   ): Promise<IMovieResult> => {
-    const additionalPath = name ? `/search/${name}` : '';
+    let additionalPath = name ? `/search/${name}` : '';
+    if (sortType) {
+      additionalPath += `?sort_type=${sortType}`;
+    }
     return await fetch(`${env.API_URL}/my-library${additionalPath}`, {
       headers: {
         'Content-Type': 'application/json',
@@ -94,6 +101,18 @@ const MyLibrary = (): ReactElement => {
       });
   };
 
+  const handleSortTypeChange = (event: any, newSortType: string): void => {
+    setSortType(newSortType);
+    getMoviesFromLibrary(undefined, newSortType)
+      .then((data) => {
+        setErrorMessage(null);
+        setMovies(data.movies);
+      })
+      .catch((error) => {
+        setErrorMessage(error.message);
+      });
+  };
+
   useEffect(() => {
     showMovies();
   }, []);
@@ -109,27 +128,42 @@ const MyLibrary = (): ReactElement => {
 
       <Grid container spacing={2} style={{ marginTop: 10, marginBottom: 10 }}>
         <Grid xs={4}>
-        <Autocomplete
-          id='combo-box-demo'
-          options={options}
-          onInputChange={onSearchInputChange}
-          getOptionLabel={(option: { title: string, key: string }) => option.title}
-          renderInput={(params) => (
-            <TextField {...params} label='Search film' variant='outlined' />
-          )}
-          renderOption={(props, option) => {
-            return (
-              <li {...props} key={option.key}>
-                {option.title}
-              </li>
-            );
-          }}
-      />
+          <Autocomplete
+            id='combo-box-demo'
+            options={options}
+            onInputChange={onSearchInputChange}
+            getOptionLabel={(option: { title: string, key: string }) => option.title}
+            renderInput={(params) => (
+              <TextField {...params} label='Search film' variant='outlined' />
+            )}
+            renderOption={(props, option) => {
+              return (
+                <li {...props} key={option.key}>
+                  {option.title}
+                </li>
+              );
+            }}
+        />
         </Grid>
-        <Grid xs={4}>
+
+        <Grid xs={2}>
           <Button variant="contained" onClick={() => { showMovies() }} style={{ height: 56 }}>
             <SearchIcon />
           </Button>
+        </Grid>
+
+        <Grid xs={4}>
+          <ToggleButtonGroup
+            color="primary"
+            value={sortType}
+            exclusive
+            onChange={handleSortTypeChange}
+            aria-label="Sort type"
+          >
+            <ToggleButton value="title">Title</ToggleButton>
+            <ToggleButton value="added">Added date</ToggleButton>
+            <ToggleButton value="release">Released date</ToggleButton>
+          </ToggleButtonGroup>
         </Grid>
       </Grid>
 
