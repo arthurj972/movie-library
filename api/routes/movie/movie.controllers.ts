@@ -76,7 +76,7 @@ const movie = async (req: Request, res: Response, next: NextFunction): Promise<v
             vote_average: movie.vote_average,
             vote_count: movie.vote_count,
             on_my_library: (movieOnMyLibrary !== null),
-            user_raiting: movieOnMyLibrary?.raiting
+            user_raiting: movieOnMyLibrary?.raiting ? movieOnMyLibrary.raiting : 0
         }
 
         res.json({
