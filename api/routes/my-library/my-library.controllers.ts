@@ -5,7 +5,7 @@ import mongoose from 'mongoose';
 import { getMovieDBdetail } from '../../core/services/moviedb.service';
 import UserLibraryModel, { type IUserLibrarySchema } from '../../models/user-library';
 
-import { type IAddBody } from './my-library.schemas';
+import { type IAddOrRemoveBody } from './my-library.schemas';
 
 dotenv.config();
 
@@ -26,7 +26,7 @@ const get = async (req: Request, res: Response, next: NextFunction): Promise<voi
 };
 
 const addMovie = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const body: IAddBody = req.body as unknown as IAddBody;
+    const body: IAddOrRemoveBody = req.body as unknown as IAddOrRemoveBody;
 
     try {
         const movieAlreadyAdded = await UserLibraryModel.count({ moviedb_id: body.moviedb_id });
@@ -54,4 +54,22 @@ const addMovie = async (req: Request, res: Response, next: NextFunction): Promis
     }
 };
 
-export default { get, addMovie };
+const removeMovie = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const body: IAddOrRemoveBody = req.body as unknown as IAddOrRemoveBody;
+
+    try {
+        const movieOnLibrary = await UserLibraryModel.findOne({ moviedb_id: body.moviedb_id });
+        if (movieOnLibrary) {
+            await UserLibraryModel.deleteOne({ moviedb_id: body.moviedb_id });
+            res.status(202).json({
+                message: 'movie removed from your library'
+            });
+        } else {
+            next(new Error('movie not in your library'));
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
+export default { get, addMovie, removeMovie };

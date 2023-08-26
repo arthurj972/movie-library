@@ -10,6 +10,8 @@ const validator = createValidator({});
 
 router.get('/', controllers.get);
 
-router.post('/add', validator.body(schemas.addMovie), controllers.addMovie);
+router.post('/', validator.body(schemas.addOrRemoveMovieBody), controllers.addMovie);
+
+router.delete('/', validator.body(schemas.addOrRemoveMovieBody), controllers.removeMovie);
 
 export default router;

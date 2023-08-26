@@ -8,6 +8,7 @@ import { getMovieDBdetail } from '../../core/services/moviedb.service';
 import { type IMovie, type IMovieDetails } from '../../core/models/movie.models';
 import { type IMovieDBresult } from '../../core/models/moviedb.models';
 
+import UserLibraryModel from '../../models/user-library';
 import { type IMovieParams, type ISearchQuery } from './movie.schemas';
 
 dotenv.config();
@@ -50,7 +51,10 @@ const search = async (req: Request, res: Response, next: NextFunction): Promise<
 const movie = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const params: IMovieParams = req.params as unknown as IMovieParams;
     try {
-        const movie = await getMovieDBdetail(params.id);
+        const [movie, onMyLibrary] = await Promise.all([
+            getMovieDBdetail(params.id),
+            UserLibraryModel.count({ moviedb_id: params.id })
+        ]);
 
         // clear data (removes unnecessary variables & adds new)
         const finalMovie: IMovieDetails = {
@@ -71,7 +75,7 @@ const movie = async (req: Request, res: Response, next: NextFunction): Promise<v
             title: movie.title,
             vote_average: movie.vote_average,
             vote_count: movie.vote_count,
-            on_my_library: false
+            on_my_library: (onMyLibrary !== 0)
         }
 
         res.json({

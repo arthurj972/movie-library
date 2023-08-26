@@ -1,12 +1,12 @@
 import Joi from 'joi';
 
 // Add
-export interface IAddBody {
+export interface IAddOrRemoveBody {
     moviedb_id: string
 };
 
-const addMovie = Joi.object({
+const addOrRemoveMovieBody = Joi.object({
     moviedb_id: Joi.number().required()
 });
 
-export default { addMovie };
+export default { addOrRemoveMovieBody };
