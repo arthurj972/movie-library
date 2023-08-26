@@ -164,7 +164,9 @@ const Movie = (): ReactElement => {
 
         <p style={{ marginBottom: 50 }}>{movie.overview}</p>
 
-        <MovieHoverRating />
+        <div style={{ marginBottom: 50 }}>
+          <MovieHoverRating rate={movie.user_raiting} moviedbId={movie.moviedb_id.toString()} />
+        </div>
 
         {movie.homepage !== '' &&
           <Button variant="contained" href={movie.homepage} target='_blank'>
