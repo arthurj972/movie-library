@@ -43,8 +43,8 @@ app.get('/*', (req: Request, res: Response) => {
 
 console.error('[mongodb] waiting connection ...');
 mongoose
-    .connect('mongodb://localhost:27017/movie-library', {
-    // .connect('mongodb://host.docker.internal:27017/movie-library', {
+    // .connect('mongodb://localhost:27017/movie-library', {
+    .connect('mongodb://host.docker.internal:27017/movie-library', {
         auth: {
             username: process.env.MONGODB_USERNAME,
             password: process.env.MONGODB_PASSWORD
