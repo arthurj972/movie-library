@@ -15,7 +15,7 @@ interface MovieCardProps {
 const MovieCard: FC<MovieCardProps > = ({ movie }): JSX.Element => {
   return (
     <Card sx={{ maxWidth: 300 }}>
-      <CardActionArea>
+      <CardActionArea href={`/movie/${movie.moviedb_id}`} target="_blank">
         <CardMedia
           component="img"
           height="400"

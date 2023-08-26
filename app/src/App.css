@@ -40,6 +40,14 @@
   -webkit-line-clamp: 2;
 }
 
+.Header-image {
+  /* background-image: url(""); */
+  background-repeat: no-repeat;
+  background-position-x: center;
+  background-size: cover;
+  height: 400px;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
