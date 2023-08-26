@@ -29,4 +29,5 @@ export interface IMovieDetails {
     vote_average: number
     vote_count: number
     on_my_library: boolean
+    user_raiting?: number
 }

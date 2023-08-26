@@ -51,9 +51,9 @@ const search = async (req: Request, res: Response, next: NextFunction): Promise<
 const movie = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const params: IMovieParams = req.params as unknown as IMovieParams;
     try {
-        const [movie, onMyLibrary] = await Promise.all([
+        const [movie, movieOnMyLibrary] = await Promise.all([
             getMovieDBdetail(params.id),
-            UserLibraryModel.count({ moviedb_id: params.id })
+            UserLibraryModel.findOne({ moviedb_id: params.id })
         ]);
 
         // clear data (removes unnecessary variables & adds new)
@@ -75,7 +75,8 @@ const movie = async (req: Request, res: Response, next: NextFunction): Promise<v
             title: movie.title,
             vote_average: movie.vote_average,
             vote_count: movie.vote_count,
-            on_my_library: (onMyLibrary !== 0)
+            on_my_library: (movieOnMyLibrary !== null),
+            user_raiting: movieOnMyLibrary?.raiting
         }
 
         res.json({

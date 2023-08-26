@@ -5,7 +5,7 @@ import mongoose from 'mongoose';
 import { getMovieDBdetail } from '../../core/services/moviedb.service';
 import UserLibraryModel, { type IUserLibrarySchema } from '../../models/user-library';
 
-import { type IAddOrRemoveBody } from './my-library.schemas';
+import { type IAddOrRemoveBody, type IRateBody } from './my-library.schemas';
 
 dotenv.config();
 
@@ -54,6 +54,31 @@ const addMovie = async (req: Request, res: Response, next: NextFunction): Promis
     }
 };
 
+const rateMovie = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const body: IRateBody = req.body as unknown as IRateBody;
+
+    try {
+        const movieOnLibrary = await UserLibraryModel.findOne({ moviedb_id: body.moviedb_id });
+        if (movieOnLibrary) {
+            const movie = await UserLibraryModel.findOneAndUpdate(
+                { moviedb_id: body.moviedb_id },
+                { raiting: body.rate },
+                {
+                    new: true
+                }
+            );
+            res.status(202).json({
+                message: 'movie updated from your library',
+                movie
+            });
+        } else {
+            next(new Error('movie not in your library'));
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
 const removeMovie = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const body: IAddOrRemoveBody = req.body as unknown as IAddOrRemoveBody;
 
@@ -72,4 +97,4 @@ const removeMovie = async (req: Request, res: Response, next: NextFunction): Pro
     }
 };
 
-export default { get, addMovie, removeMovie };
+export default { get, addMovie, rateMovie, removeMovie };

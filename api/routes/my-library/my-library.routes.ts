@@ -12,6 +12,8 @@ router.get('/', controllers.get);
 
 router.post('/', validator.body(schemas.addOrRemoveMovieBody), controllers.addMovie);
 
+router.patch('/', validator.body(schemas.rateBody), controllers.rateMovie);
+
 router.delete('/', validator.body(schemas.addOrRemoveMovieBody), controllers.removeMovie);
 
 export default router;
