@@ -15,7 +15,7 @@ export interface IRateBody {
 };
 
 const rateBody = Joi.object({
-    rate: Joi.number().min(0.5).max(10).required()
+    rate: Joi.number().min(0.5).max(5).required()
 });
 
 export default { userMovieParams, rateBody };
