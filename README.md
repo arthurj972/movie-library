@@ -12,6 +12,9 @@ Movie Library with React NodeJS MongoDB on dockerizing application.
 You need to pass your [The Movie DB](https://www.themoviedb.org/settings/api) token on `/api/.env`:`MOVIEDB_TOKEN` file.\
 It's the **token**, not *api key*.
 
+If you have problem with CORS, please allowed on your browser.\
+With this [this extension](https://chrome.google.com/webstore/detail/cors-unblock/lfhmikememgdcahcdlaciloancbhjino) for example.
+
 ## Docker Compose
 
 Deploy this stack with `docker-compose` ! It contains:
