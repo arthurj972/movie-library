@@ -1,9 +1,13 @@
 import axios from 'axios';
 import dotenv from 'dotenv';
 import { type NextFunction, type Request, type Response } from 'express';
+
 import { nFormatter } from '../../core/functions';
+import { getMovieDBdetail } from '../../core/services/moviedb.service';
+
 import { type IMovie, type IMovieDetails } from '../../core/models/movie.models';
-import { type IMovieDBdetailsResult, type IMovieDBresult } from '../../core/models/moviedb.models';
+import { type IMovieDBresult } from '../../core/models/moviedb.models';
+
 import { type IMovieParams, type ISearchQuery } from './movie.schemas';
 
 dotenv.config();
@@ -46,10 +50,7 @@ const search = async (req: Request, res: Response, next: NextFunction): Promise<
 const movie = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const params: IMovieParams = req.params as unknown as IMovieParams;
     try {
-        const response = await axios.get(`${movieDbApi}/3/movie/${params.id}&language=fr-FR`, {
-            headers: { Authorization: `Bearer ${movieDbToken}` }
-        });
-        const movie: IMovieDBdetailsResult = response.data;
+        const movie = await getMovieDBdetail(params.id);
 
         // clear data (removes unnecessary variables & adds new)
         const finalMovie: IMovieDetails = {
