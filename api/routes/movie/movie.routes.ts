@@ -14,4 +14,6 @@ router.get('/search', validator.query(schemas.search), controllers.search);
 
 router.get('/details/:id', controllers.movie);
 
+router.get('/recommendations/:id', controllers.recommendations);
+
 export default router;

@@ -49,6 +49,35 @@ const search = async (req: Request, res: Response, next: NextFunction): Promise<
     }
 };
 
+const recommendations = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const params: IMovieParams = req.params as unknown as IMovieParams;
+    try {
+        const response = await axios.get(`${movieDbApi}/3/movie/${params.id}/recommendations`, {
+            headers: { Authorization: `Bearer ${movieDbToken}` }
+        });
+        const results: IMovieDBresult[] = response.data.results;
+
+        const finalMovies = results.map(movie => {
+            const finalMovie: IMovie = {
+                title: movie.title,
+                poster_path: movie.poster_path,
+                date: movie.release_date,
+                overview: movie.overview,
+                on_my_library: false,
+                moviedb_id: movie.id,
+                release_date: movie.release_date
+            };
+            return finalMovie;
+        });
+
+        res.json({
+            movies: finalMovies
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 const movie = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const params: IMovieParams = req.params as unknown as IMovieParams;
     try {
@@ -88,4 +117,4 @@ const movie = async (req: Request, res: Response, next: NextFunction): Promise<v
     }
 };
 
-export default { get, search, movie };
+export default { get, search, recommendations, movie };
