@@ -1,8 +1,12 @@
 import React, { useState, type ReactElement, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import env from 'react-dotenv';
+
 import { type IMovieDetails, type IMovieDetailsResult } from '../models/movie.models';
+
 import ErrorMessage from '../components/ErrorMessage';
+import MovieHoverRating from '../components/MovieHoverRating';
+
 import { Button, Chip, Tooltip } from '@mui/material';
 
 import TodayIcon from '@mui/icons-material/Today';
@@ -66,7 +70,7 @@ const Movie = (): ReactElement => {
           {movie.original_title} ({movie.original_language.toUpperCase()})
         </h2>
 
-        <p style={{ marginTop: 25, marginBottom: 35 }}>
+        <div style={{ marginTop: 25, marginBottom: 35 }}>
           {movie.release_date !== '' &&
             <Tooltip title='Release date'>
               <Chip icon={<TodayIcon />} label={new Date(movie.release_date).getFullYear()} variant="outlined" sx={{ m: 0.5 }} />
@@ -92,17 +96,19 @@ const Movie = (): ReactElement => {
           <Tooltip title={`${movie.vote_count} votes`}>
             <Chip icon={<ThumbUpIcon />} label={`${movie.vote_average}/10`} variant="outlined" sx={{ m: 0.5 }} />
           </Tooltip>
-        </p>
+        </div>
 
         <p style={{ marginBottom: 50 }}>{movie.overview}</p>
 
-        <p>
+        <MovieHoverRating />
+
+        <div>
           {movie.homepage !== '' &&
             <Button variant="contained" href={movie.homepage} target='_blank'>
               <LanguageIcon />Go to homepage
             </Button>
           }
-        </p>
+        </div>
       </>
     );
   } else {
