@@ -5,7 +5,7 @@ import mongoose from 'mongoose';
 import { getMovieDBdetail } from '../../core/services/moviedb.service';
 import UserLibraryModel, { type IUserLibrarySchema } from '../../models/user-library';
 
-import { type IAddOrRemoveBody, type IRateBody } from './my-library.schemas';
+import { type IRateBody, type IUserMovieParams } from './my-library.schemas';
 
 dotenv.config();
 
@@ -26,12 +26,12 @@ const get = async (req: Request, res: Response, next: NextFunction): Promise<voi
 };
 
 const addMovie = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const body: IAddOrRemoveBody = req.body as unknown as IAddOrRemoveBody;
+    const params: IUserMovieParams = req.params as unknown as IUserMovieParams;
 
     try {
-        const movieAlreadyAdded = await UserLibraryModel.count({ moviedb_id: body.moviedb_id });
+        const movieAlreadyAdded = await UserLibraryModel.count({ moviedb_id: params.moviedb_id });
         if (movieAlreadyAdded === 0) {
-            const movieDBdetails = await getMovieDBdetail(body.moviedb_id);
+            const movieDBdetails = await getMovieDBdetail(params.moviedb_id);
             const userLibrary: IUserLibrarySchema = {
                 _id: new mongoose.Types.ObjectId(),
                 moviedb_title: movieDBdetails.title,
@@ -55,13 +55,14 @@ const addMovie = async (req: Request, res: Response, next: NextFunction): Promis
 };
 
 const rateMovie = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const params: IUserMovieParams = req.params as unknown as IUserMovieParams;
     const body: IRateBody = req.body as unknown as IRateBody;
 
     try {
-        const movieOnLibrary = await UserLibraryModel.findOne({ moviedb_id: body.moviedb_id });
+        const movieOnLibrary = await UserLibraryModel.findOne({ moviedb_id: params.moviedb_id });
         if (movieOnLibrary) {
             const movie = await UserLibraryModel.findOneAndUpdate(
-                { moviedb_id: body.moviedb_id },
+                { moviedb_id: params.moviedb_id },
                 { raiting: body.rate },
                 {
                     new: true
@@ -80,12 +81,12 @@ const rateMovie = async (req: Request, res: Response, next: NextFunction): Promi
 };
 
 const removeMovie = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const body: IAddOrRemoveBody = req.body as unknown as IAddOrRemoveBody;
+    const params: IUserMovieParams = req.params as unknown as IUserMovieParams;
 
     try {
-        const movieOnLibrary = await UserLibraryModel.findOne({ moviedb_id: body.moviedb_id });
+        const movieOnLibrary = await UserLibraryModel.findOne({ moviedb_id: params.moviedb_id });
         if (movieOnLibrary) {
-            await UserLibraryModel.deleteOne({ moviedb_id: body.moviedb_id });
+            await UserLibraryModel.deleteOne({ moviedb_id: params.moviedb_id });
             res.status(202).json({
                 message: 'movie removed from your library'
             });

@@ -10,10 +10,10 @@ const validator = createValidator({});
 
 router.get('/', controllers.get);
 
-router.post('/', validator.body(schemas.addOrRemoveMovieBody), controllers.addMovie);
+router.post('/movie/:moviedb_id', validator.params(schemas.userMovieParams), controllers.addMovie);
 
-router.patch('/', validator.body(schemas.rateBody), controllers.rateMovie);
+router.patch('/movie/:moviedb_id', validator.params(schemas.userMovieParams), validator.body(schemas.rateBody), controllers.rateMovie);
 
-router.delete('/', validator.body(schemas.addOrRemoveMovieBody), controllers.removeMovie);
+router.delete('/movie/:moviedb_id', validator.params(schemas.userMovieParams), controllers.removeMovie);
 
 export default router;

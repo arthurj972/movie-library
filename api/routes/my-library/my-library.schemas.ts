@@ -1,23 +1,21 @@
 import Joi from 'joi';
 
-// Add or remove
-export interface IAddOrRemoveBody {
+// for POST / PUT / PATH requests
+export interface IUserMovieParams {
     moviedb_id: string
 };
 
-const addOrRemoveMovieBody = Joi.object({
+const userMovieParams = Joi.object({
     moviedb_id: Joi.number().required()
 });
 
-// Rate movie
+// Rate movie body
 export interface IRateBody {
-    moviedb_id: string
     rate: number
 };
 
 const rateBody = Joi.object({
-    moviedb_id: Joi.number().required(),
     rate: Joi.number().min(0.5).max(10).required()
 });
 
-export default { addOrRemoveMovieBody, rateBody };
+export default { userMovieParams, rateBody };
