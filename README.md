@@ -26,8 +26,9 @@ You can change default ports on `docker-compose.yml`.
 
 In this root directory, you can run:
 
-### `docker-compose up`
+### `docker-compose up -d`
 
-Runs the entire stack in the production mode.
+Runs the entire stack on the production mode./
+Please wait few minutes.
 
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
