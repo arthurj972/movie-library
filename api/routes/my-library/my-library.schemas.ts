@@ -27,4 +27,13 @@ const searchParams = Joi.object({
     name: Joi.string().required()
 });
 
-export default { userMovieParams, rateBody, searchParams };
+// Search queries
+export interface ISearchQuery {
+    sort_type?: string
+};
+
+const searchQuery = Joi.object({
+    sort_type: Joi.string().valid('title', 'added', 'release')
+});
+
+export default { userMovieParams, rateBody, searchParams, searchQuery };

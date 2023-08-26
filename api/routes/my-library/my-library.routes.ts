@@ -8,9 +8,9 @@ import schemas from './my-library.schemas';
 const router: Router = Router();
 const validator = createValidator({});
 
-router.get('/', controllers.get);
+router.get('/', validator.query(schemas.searchQuery), controllers.get);
 
-router.get('/search/:name', validator.params(schemas.searchParams), controllers.search);
+router.get('/search/:name', validator.params(schemas.searchParams), validator.query(schemas.searchQuery), controllers.search);
 
 router.post('/movie/:moviedb_id', validator.params(schemas.userMovieParams), controllers.addMovie);
 
