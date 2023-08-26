@@ -1,12 +1,10 @@
 import React, { type ReactElement } from 'react';
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import MyLibrary from './pages/my-library';
-import Navbar from './components/Navbar';
-import NoMatch from './pages/errors/404';
-import Movie from './pages/movie';
-import Home from './pages/home';
 import { Container } from '@mui/material';
+
+import Navbar from './components/Navbar';
+import Pages from './pages';
 
 const App = (): ReactElement => {
   return (
@@ -14,10 +12,10 @@ const App = (): ReactElement => {
       <Navbar />
       <Container fixed>
         <Routes>
-          <Route path='/' element={<Home />} />
-          <Route path='/my' element={<MyLibrary />} />
-          <Route path='/movie/:id' element={<Movie />} />
-          <Route path='*' element={<NoMatch />} />
+          <Route path='/' element={<Pages.Home />} />
+          <Route path='/my' element={<Pages.MyLibrary />} />
+          <Route path='/movie/:id' element={<Pages.Movie />} />
+          <Route path='*' element={<Pages.NoMatch />} />
         </Routes>
       </Container>
     </Router>
