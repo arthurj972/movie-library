@@ -67,9 +67,11 @@ const Movie = (): ReactElement => {
         </h2>
 
         <p style={{ marginTop: 25, marginBottom: 35 }}>
-          <Tooltip title='Release date'>
-            <Chip icon={<TodayIcon />} label={new Date(movie.release_date).getFullYear()} variant="outlined" sx={{ m: 0.5 }} />
-          </Tooltip>
+          {movie.release_date !== '' &&
+            <Tooltip title='Release date'>
+              <Chip icon={<TodayIcon />} label={new Date(movie.release_date).getFullYear()} variant="outlined" sx={{ m: 0.5 }} />
+            </Tooltip>
+          }
 
           <Tooltip title='Status'>
             <Chip label={movie.status} variant="outlined" sx={{ m: 0.5 }} />
