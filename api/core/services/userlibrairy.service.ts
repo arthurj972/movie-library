@@ -8,8 +8,10 @@ export const addMovieOnLibrairy = async (movieDBid: string): Promise<any> => {
         const movieDBdetails = await getMovieDBdetail(movieDBid);
         const userLibrary: IUserLibrarySchema = {
             _id: new mongoose.Types.ObjectId(),
+            added_date: new Date(),
             moviedb_title: movieDBdetails.title,
             moviedb_overview: movieDBdetails.overview,
+            moviedb_release_date: movieDBdetails.release_date,
             moviedb_posterpath: movieDBdetails.poster_path,
             moviedb_id: movieDBdetails.id
         };

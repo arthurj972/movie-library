@@ -35,7 +35,8 @@ const search = async (req: Request, res: Response, next: NextFunction): Promise<
                 date: movie.release_date,
                 overview: movie.overview,
                 on_my_library: false,
-                moviedb_id: movie.id
+                moviedb_id: movie.id,
+                release_date: movie.release_date
             };
             return finalMovie;
         });

@@ -5,6 +5,8 @@ export interface IMovie {
     date: Date
     title: string
     on_my_library: boolean
+    release_date: Date
+    added_date?: Date
 };
 
 export interface IMovieDetails {
