@@ -4,13 +4,34 @@ import { type NextFunction, type Request, type Response } from 'express';
 import UserLibraryModel from '../../models/user-library';
 
 import { addMovieOnLibrairy } from '../../core/services/userlibrairy.service';
-import { type IRateBody, type IUserMovieParams } from './my-library.schemas';
+import { type IRateBody, type ISearchParams, type IUserMovieParams } from './my-library.schemas';
 
 dotenv.config();
 
 const get = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const library = await UserLibraryModel.find();
+        const library = await UserLibraryModel.find().limit(200); // TODO: pagination system
+        res.status(200).json({
+            movies: library.map((movie) => ({
+                moviedb_id: movie.moviedb_id,
+                title: movie.moviedb_title,
+                overview: movie.moviedb_overview,
+                poster_path: movie.moviedb_posterpath
+            }))
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const search = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const params: ISearchParams = req.params as unknown as ISearchParams;
+    try {
+        const library = await UserLibraryModel.find(
+            { $text: { $search: params.name } },
+            { score: { $meta: 'textScore' } }
+        ).sort({ score: { $meta: 'textScore' } }).exec();
+
         res.status(200).json({
             movies: library.map((movie) => ({
                 moviedb_id: movie.moviedb_id,
@@ -81,4 +102,4 @@ const removeMovie = async (req: Request, res: Response, next: NextFunction): Pro
     }
 };
 
-export default { get, addMovie, rateMovie, removeMovie };
+export default { get, search, addMovie, rateMovie, removeMovie };

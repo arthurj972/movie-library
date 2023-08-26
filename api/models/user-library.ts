@@ -18,8 +18,7 @@ const userLibrary = new Schema<IUserLibrarySchema>({
     moviedb_posterpath: { type: String },
     moviedb_id: { type: Number, required: true },
     raiting: { type: Number }
-
-});
+}).index({ moviedb_title: 'text', moviedb_overview: 'text' });
 
 const UserLibraryModel = mongoose.model<IUserLibrarySchema>('UserLibrary', userLibrary);
 

@@ -10,6 +10,8 @@ const validator = createValidator({});
 
 router.get('/', controllers.get);
 
+router.get('/search/:name', validator.params(schemas.searchParams), controllers.search);
+
 router.post('/movie/:moviedb_id', validator.params(schemas.userMovieParams), controllers.addMovie);
 
 router.patch('/movie/:moviedb_id', validator.params(schemas.userMovieParams), validator.body(schemas.rateBody), controllers.rateMovie);

@@ -18,4 +18,13 @@ const rateBody = Joi.object({
     rate: Joi.number().min(0.5).max(5).required()
 });
 
-export default { userMovieParams, rateBody };
+// Search params
+export interface ISearchParams {
+    name: string
+};
+
+const searchParams = Joi.object({
+    name: Joi.string().required()
+});
+
+export default { userMovieParams, rateBody, searchParams };
