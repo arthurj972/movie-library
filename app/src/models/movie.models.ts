@@ -25,7 +25,7 @@ export interface IMovieDetails {
   original_title: string
   overview: string
   poster_path: string
-  release_date: Date
+  release_date: Date | string
   revenue: number
   revenue_format: string
   status: string
