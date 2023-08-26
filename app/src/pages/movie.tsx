@@ -2,12 +2,12 @@ import React, { useState, type ReactElement, useEffect, type SyntheticEvent } fr
 import { useParams } from 'react-router-dom';
 import env from 'react-dotenv';
 
-import { type IMovieDetails, type IMovieDetailsResult } from '../models/movie.models';
+import { type IMovieResult, type IMovieDetails, type IMovieDetailsResult, type IMovie } from '../models/movie.models';
 
 import ErrorMessage from '../components/ErrorMessage';
 import MovieHoverRating from '../components/MovieHoverRating';
 
-import { Button, Checkbox, Chip, Tooltip } from '@mui/material';
+import { Box, Button, Checkbox, Chip, Grid, Tooltip } from '@mui/material';
 
 // icons
 import TodayIcon from '@mui/icons-material/Today';
@@ -17,6 +17,7 @@ import RedeemIcon from '@mui/icons-material/Redeem';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
+import MovieCard from '../components/MovieCard';
 
 const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
@@ -26,6 +27,7 @@ const Movie = (): ReactElement => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [movie, setMovie] = useState<IMovieDetails | null>(null);
   const [updateOnLibraryLoading, setUpdateOnLibraryLoading] = useState<boolean>(false);
+  const [recommendations, setRecommendations] = useState<IMovie[]>([]);
 
   /**
    * Get movie details
@@ -90,6 +92,22 @@ const Movie = (): ReactElement => {
       });
   };
 
+  const getRecommendations = async (
+    id?: string
+  ): Promise<IMovieResult> => {
+    return await fetch(`${env.API_URL}/movie/recommendations/${id}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      }
+    }).then(async (response) => {
+      if (!response.ok) {
+        throw new Error(await response.text());
+      }
+      return await response.json();
+    });
+  };
+
   useEffect(() => {
     // fetch api only if id is a number
     if (id != null && !isNaN(+id)) {
@@ -97,6 +115,15 @@ const Movie = (): ReactElement => {
         .then((data) => {
           setErrorMessage(null);
           setMovie(data.movie);
+        })
+        .catch((error) => {
+          setErrorMessage(error.message);
+        });
+
+      getRecommendations(id)
+        .then((data) => {
+          setErrorMessage(null);
+          setRecommendations(data.movies);
         })
         .catch((error) => {
           setErrorMessage(error.message);
@@ -173,6 +200,24 @@ const Movie = (): ReactElement => {
             <LanguageIcon />Go to homepage
           </Button>
         }
+
+        <Box
+          sx={{ flexGrow: 1 }}
+          style={{ marginTop: 50 }}
+        >
+          <h1 style={{ marginBottom: 50 }}>Recommendations</h1>
+          <Grid
+            container
+            spacing={{ xs: 2, md: 3 }}
+            columns={{ xs: 4, sm: 8, md: 12 }}
+          >
+            {recommendations.map((movie, index) => (
+              <Grid xs={2} sm={4} md={4} key={index}>
+                <MovieCard movie={movie}></MovieCard>
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
       </>
     );
   } else {
