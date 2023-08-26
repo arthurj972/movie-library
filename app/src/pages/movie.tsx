@@ -54,11 +54,8 @@ const Movie = (): ReactElement => {
    * @returns {Promise}
    */
   const addOrRemoveToUserLibrary = async (add: boolean = true): Promise<void> => {
-    return await fetch(`${env.API_URL}/my-library`, {
+    return await fetch(`${env.API_URL}/my-library/movie/${id}`, {
       method: add ? 'POST' : 'DELETE',
-      body: JSON.stringify({
-        moviedb_id: id
-      }),
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json'
