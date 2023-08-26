@@ -23,7 +23,7 @@ const get = async (req: Request, res: Response, next: NextFunction): Promise<voi
             library = await libraryQuery.sort({ added_date: 1 });
             break;
         case 'release':
-            library = await libraryQuery.sort({ release: 1 });
+            library = await libraryQuery.sort({ moviedb_release_date: 1 });
             break;
         default:
             library = await libraryQuery.sort({ moviedb_title: 1 });
