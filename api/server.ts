@@ -1,4 +1,5 @@
 import bodyParser from 'body-parser';
+import cors from 'cors';
 import dotenv from 'dotenv';
 import express, { type Express, type NextFunction, type Request, type Response } from 'express';
 
@@ -9,6 +10,14 @@ dotenv.config();
 
 const app: Express = express();
 const port: string | undefined = process.env.PORT;
+
+// allow CORS from any origins
+// only for localhost development use
+if (process.env.ENV === 'localhost') {
+    app.use(cors({
+        origin: '*'
+    }));
+}
 
 app.get('/', (req: Request, res: Response) => {
     res.send('Movie Library API');
