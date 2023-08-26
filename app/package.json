@@ -29,7 +29,7 @@
     "eject": "react-scripts eject"
   },
   "react-dotenv": {
-    "whitelist": ["API_URL"]
+    "whitelist": ["API_URL", "MOVIEDB_IMAGESPATH", "MOVIEDB_500_IMAGESPATH"]
   },
   "browserslist": {
     "production": [

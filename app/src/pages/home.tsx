@@ -2,48 +2,138 @@
 import React, { useState, type ReactElement, type SyntheticEvent } from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Unstable_Grid2';
-import { Autocomplete, type AutocompleteInputChangeReason, TextField } from '@mui/material';
+import {
+  Autocomplete,
+  type AutocompleteInputChangeReason,
+  TextField,
+  Button
+} from '@mui/material';
+import env from 'react-dotenv';
+import SearchIcon from '@mui/icons-material/Search';
+
 import MovieCard from '../components/MovieCard';
+import ErrorMessage from '../components/ErrorMessage';
+import { type IMovieResult, type IMovie } from '../models/movie.models';
 
 const Home = (): ReactElement => {
-  const [options, setOptions] = useState([]);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [options, setOptions] = useState([{ title: '', key: '' }]);
+  const [searchName, setSearchName] = useState<string>('');
+  const [movies, setMovies] = useState<IMovie[]>([]);
 
-  const getData = (searchTerm: string): void => {
-    // fetch api
+  const getMovies = async (
+    name: string,
+    signal?: AbortSignal
+  ): Promise<IMovieResult> => {
+    return await fetch(`${env.API_URL}/movie/search?name=${name}`, {
+      signal,
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      }
+    }).then(async (response) => {
+      if (!response.ok) {
+        throw new Error(await response.text());
+      }
+      return await response.json();
+    });
   };
 
-  const onInputChange = (event: SyntheticEvent, value: string, reason: AutocompleteInputChangeReason): void => {
-    if (value) {
-      getData(value);
-    } else {
-      setOptions([]);
+  const getMoviesForAutocompleteInput = (name: string): void => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    getMovies(name, signal)
+      .then((data) => {
+        setErrorMessage(null);
+        const updatedOptions = [{ title: name, key: name }];
+
+        // add new data on updatedOptions
+        updatedOptions.push(...data.movies.map(movie => {
+          return { title: movie.title, key: movie.moviedb_id.toString() };
+        }));
+        setOptions(updatedOptions);
+      })
+      .catch((error) => {
+        setErrorMessage(error.message);
+      });
+  };
+
+  const onSearchInputChange = (
+    event: SyntheticEvent,
+    value: string,
+    reason: AutocompleteInputChangeReason
+  ): void => {
+    setSearchName(value);
+    if (event.type === 'change') {
+      // autocomplete only from 3 characters
+      if (value && value.length > 2) {
+        getMoviesForAutocompleteInput(value);
+      } else {
+        setOptions([{ title: value, key: value }]);
+      }
+    } else if (event.type === 'click') {
+      showMovies(value);
     }
   };
+
+  /**
+   * Retrieves movies and displays on card
+   * @param {string} name?:string
+   * @returns {void}
+   */
+  const showMovies = (name?: string): void => {
+    getMovies(name ?? searchName)
+      .then((data) => {
+        setErrorMessage(null);
+        setMovies(data.movies);
+      })
+      .catch((error) => {
+        setErrorMessage(error.message);
+      });
+  };
+
   return (
     <Box
       sx={{ flexGrow: 1 }}
-      style={{
-        paddingTop: '50px'
-      }}
+      style={{ marginTop: 50 }}
     >
-      <Autocomplete
-        id='combo-box-demo'
-        options={options}
-        onInputChange={onInputChange}
-        getOptionLabel={(option: { title: string }) => option.title}
-        style={{ width: 300 }}
-        renderInput={(params) => (
-          <TextField {...params} label='Search film' variant='outlined' />
-        )}
+      <ErrorMessage message={errorMessage} />
+
+      <Grid container spacing={2} style={{ marginTop: 10, marginBottom: 10 }}>
+        <Grid xs={4}>
+        <Autocomplete
+          id='combo-box-demo'
+          options={options}
+          onInputChange={onSearchInputChange}
+          getOptionLabel={(option: { title: string, key: string }) => option.title}
+          renderInput={(params) => (
+            <TextField {...params} label='Search film' variant='outlined' />
+          )}
+          renderOption={(props, option) => {
+            return (
+              <li {...props} key={option.key}>
+                {option.title}
+              </li>
+            );
+          }}
       />
+        </Grid>
+        <Grid xs={4}>
+          <Button variant="contained" onClick={() => { showMovies() }} style={{ height: 56 }}>
+            <SearchIcon />
+          </Button>
+        </Grid>
+      </Grid>
+
       <Grid
         container
         spacing={{ xs: 2, md: 3 }}
         columns={{ xs: 4, sm: 8, md: 12 }}
       >
-        {Array.from(Array(7)).map((_, index) => (
+        {movies.map((movie, index) => (
           <Grid xs={2} sm={4} md={4} key={index}>
-            <MovieCard></MovieCard>
+            <MovieCard movie={movie}></MovieCard>
           </Grid>
         ))}
       </Grid>

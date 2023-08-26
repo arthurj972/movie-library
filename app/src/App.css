@@ -28,6 +28,18 @@
   color: #61dafb;
 }
 
+.Ellipsis-3lines {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.Ellipsis-2lines {
+  -webkit-line-clamp: 2;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
